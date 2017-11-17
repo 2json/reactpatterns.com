@@ -1,22 +1,22 @@
 ## Contents
 
-* [无状态函数](#stateless-function)
-* [JSX扩展属性](#jsx-spread-attributes)
-* [解构参数](#destructuring-arguments)
-* [条件渲染](#conditional-rendering)
-* [子元素类型](#children-types)
-* [数组做为子元素](#array-as-children)
-* [函数作为子元素](#function-as-children)
-* [渲染回调](#render-callback)
-* [子元素传递](#children-pass-through)
-* [代理组件](#proxy-component)
-* [样式组件](#style-component)
-* [事件转换](#event-switch)
-* [布局组件](#layout-component)
-* [容器组件](#container-component)
-* [高阶组件](#higher-order-component)
-* [状态提升](#state-hoisting)
-* [可控的input](#controlled-input)
+* [无状态函数](#无状态函数)
+* [JSX扩展属性](#JSX扩展属性)
+* [解构参数](#解构参数)
+* [条件渲染](#条件渲染)
+* [子元素类型](#子元素类型)
+* [数组做为子元素](#数组做为子元素)
+* [函数作为子元素](#函数作为子元素)
+* [渲染回调](#渲染回调)
+* [子元素传递](#子元素传递)
+* [代理组件](#代理组件)
+* [样式组件](#样式组件)
+* [事件转换](#事件转换)
+* [布局组件](#布局组件)
+* [容器组件](#容器组件)
+* [高阶组件](#高阶组件)
+* [状态提升](#状态提升)
+* [可控的input](#可控的input)
 
 ## 无状态函数
 
@@ -147,7 +147,7 @@ const Greeting = ({ name, ...props }) =>
   <div>Hi {name}!</div>
 ```
 
-反过来，该对象可以使用[JSX扩展属性](#jsx-spread-attributes)将`props`转发给组合组件。
+反过来，该对象可以使用[JSX扩展属性](#JSX扩展属性)将`props`转发给组合组件。
 
 ```js
 const Greeting = ({ name, ...props }) =>
@@ -217,7 +217,7 @@ React可以渲染多种类型的子元素。在大多数情况下，它是一个
 </div>
 ```
 
-函数可能被用作子元素。但是，它需要[与父组件协调](#render-callback)才有用。
+函数可能被用作子元素。但是，它需要[与父组件协调](#渲染回调)才有用。
 
 `function`
 
@@ -276,7 +276,7 @@ React可以渲染多种类型的子元素。在大多数情况下，它是一个
 
 这种强大的技巧被很多库使用像[ReactMotion](https://github.com/chenglou/react-motion)。在应用时，渲染逻辑可以保存在所有者组件中，而不是被委派。
 
-更多详细信息，请参阅[渲染回调](#render-callback)。
+更多详细信息，请参阅[渲染回调](#渲染回调)。
 
 ## 渲染回调
 
@@ -288,7 +288,7 @@ const Width = ({ children }) => children(500)
 
 该组件把子组件当做函数调用，传入一些数字参数。在这里是数字500。
 
-为了使用这个组件，我们给它一个[函数作为子元素](#function-as-children)。
+为了使用这个组件，我们给它一个[函数作为子元素](#函数作为子元素)。
 
 ```js
 <Width>
@@ -419,7 +419,7 @@ const Button = props =>
 
 ## 样式组件
 
-这是一个应用于样式实践的[代理组件](#proxy-component).
+这是一个应用于样式实践的[代理组件](#代理组件).
 
 假设我们有一个按钮。它使用class "primary"作为按钮样式。
 
@@ -588,7 +588,7 @@ class CommentListContainer extends React.Component {
 
 [高阶函数](https://en.wikipedia.org/wiki/Higher-order_function)是一个函数，它接受和/或返回一个函数。这并不比这更复杂。那么，什么是高阶组件？
 
-如果你已经在使用[容器组件](#container-component), 这些只是封装在函数中的通用容器。
+如果你已经在使用[容器组件](#容器组件), 这些只是封装在函数中的通用容器。
 
 让我们从我们的无状态 `Greeting` 组件开始吧。
 
@@ -634,13 +634,13 @@ const Connect = ComposedComponent =>
 const ConnectedMyComponent = Connect(Greeting)
 ```
 
-这是为任何数量的[无状态函数组件](#stateless-function)提供获取和绑定数据的强大模式。
+这是为任何数量的[无状态函数组件](#无状态函数)提供获取和绑定数据的强大模式。
 
 ## 状态提升
-[无状态函数](#stateless-function)不保存状态（顾名思义）。
+[无状态函数](#无状态函数)不保存状态（顾名思义）。
 
 事件是状态的变化。
-数据要传给有状态的父[容器组件](#container-component)。
+数据要传给有状态的父[容器组件](#容器组件)。
 
 这就是所谓的"状态提升"。它是通过从容器组件传递一个回调到一个子组件来完成的。
 
@@ -675,7 +675,7 @@ class NameContainer extends React.Component {
 
 这种模式不限于无状态函数。因为无状态函数没有生命周期事件，所以你也可以在类组件中使用这个模式。
 
-*[受控的input](#controlled-input)是了解状态提升使用的重要模式。
+*[受控的input](#受控的input)是了解状态提升使用的重要模式。
 
 *(最好在有状态组件上处理事件对象)*
 
@@ -723,4 +723,4 @@ class ControlledNameInput extends React.Component {
 
 这是一个受控的输入。它只在组件状态发生变化时更新DOM。创建一致的用户界面时，这是非常宝贵的。
 
-*如果你正在使用[无状态函数](#stateless-function)作表单元素，请阅读使用[状态提升](#state-hoisting)将新状态移动到组件树上。*
+*如果你正在使用[无状态函数](#无状态函数)作表单元素，请阅读使用[状态提升](#状态提升)将新状态移动到组件树上。*
