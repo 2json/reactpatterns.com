@@ -1,39 +1,39 @@
 ## Contents
 
-* [Stateless function](#stateless-function)
-* [JSX spread attributes](#jsx-spread-attributes)
-* [Destructuring arguments](#destructuring-arguments)
-* [Conditional rendering](#conditional-rendering)
-* [Children types](#children-types)
-* [Array as children](#array-as-children)
-* [Function as children](#function-as-children)
-* [Render callback](#render-callback)
-* [Children pass-through](#children-pass-through)
-* [Proxy component](#proxy-component)
-* [Style component](#style-component)
-* [Event switch](#event-switch)
-* [Layout component](#layout-component)
-* [Container component](#container-component)
-* [Higher-order component](#higher-order-component)
-* [State hoisting](#state-hoisting)
-* [Controlled input](#controlled-input)
+* [无状态函数](#stateless-function)
+* [JSX扩展属性](#jsx-spread-attributes)
+* [解构参数](#destructuring-arguments)
+* [条件渲染](#conditional-rendering)
+* [子元素类型](#children-types)
+* [数组做为子元素](#array-as-children)
+* [函数作为子元素](#function-as-children)
+* [渲染回调](#render-callback)
+* [子元素传递](#children-pass-through)
+* [代理组件](#proxy-component)
+* [样式组件](#style-component)
+* [事件转换](#event-switch)
+* [布局组件](#layout-component)
+* [容器组件](#container-component)
+* [高阶组件](#higher-order-component)
+* [状态提升](#state-hoisting)
+* [可控的input](#controlled-input)
 
-## Stateless function
+## 无状态函数
 
-[Stateless functions](https://facebook.github.io/react/docs/components-and-props.html) are a brilliant way to define highly reusable components. They don't hold `state`; they're just functions.
+[无状态函数](https://facebook.github.io/react/docs/components-and-props.html) 是定义高度可复用组件的绝妙方法。它们不保存状态，它们仅仅是函数。
 
 ```js
 const Greeting = () => <div>Hi there!</div>
 ```
 
-They get passed `props` and `context`.
+它们得到传入的`props`和`context`.
 
 ```js
 const Greeting = (props, context) =>
   <div style={{color: context.color}}>Hi {props.name}!</div>
 ```
 
-They can define local variables, where a function block is used.
+它们可以定义函数块内的局部变量。
 
 ```js
 const Greeting = (props, context) => {
@@ -46,7 +46,7 @@ const Greeting = (props, context) => {
 }
 ```
 
-But you could get the same result by using other functions.
+但使用其他函数可以得到相同的结果。
 
 ```js
 const getStyle = context => ({
@@ -58,7 +58,7 @@ const Greeting = (props, context) =>
   <div style={getStyle(context)}>{props.name}</div>
 ```
 
-They can have defined `defaultProps`, `propTypes` and `contextTypes`.
+它们也可以定义`defaultProps`, `propTypes`和`contextTypes`.
 
 ```js
 Greeting.propTypes = {
@@ -73,27 +73,28 @@ Greeting.contextTypes = {
 ```
 
 
-## JSX spread attributes
+## JSX扩展属性
 
-Spread Attributes is a JSX feature. It's syntactic sugar for passing all of an object's properties as JSX attributes.
+扩展属性是一个JSX特性。这是用于将所有对象的属性作为JSX属性传递的语法糖。
 
-These two examples are equivalent.
+这两个例子是等价的。
+
 ```js
-// props written as attributes
+// 写作属性的props
 <main className="main" role="main">{children}</main>
 
-// props "spread" from object
+// 从对象中扩展的props
 <main {...{className: "main", role: "main", children}} />
 ```
 
-Use this to forward `props` to underlying components.
+使用这种方式传送`props`给下层组件
 
 ```js
 const FancyDiv = props =>
   <div className="fancy" {...props} />
 ```
 
-Now, I can expect `FancyDiv` to add the attributes it's concerned with as well as those it's not.
+现在，我可以期待FancyDiv添加它所关注还不属于它的属性。
 
 ```js
 <FancyDiv data-id="my-fancy-div">So Fancy</FancyDiv>
@@ -101,7 +102,7 @@ Now, I can expect `FancyDiv` to add the attributes it's concerned with as well a
 // output: <div className="fancy" data-id="my-fancy-div">So Fancy</div>
 ```
 
-Keep in mind that order matters. If `props.className` is defined, it'll clobber the `className` defined by `FancyDiv`
+要记得顺序很重要。如果`props.className`被定义，它将会破坏`FancyDiv`定义的`className`
 
 ```js
 <FancyDiv className="my-fancy-div" />
@@ -109,7 +110,7 @@ Keep in mind that order matters. If `props.className` is defined, it'll clobber 
 // output: <div className="my-fancy-div"></div>
 ```
 
-We can make `FancyDiv`s className always "win" by placing it after the spread props `({...props})`.
+我们可以将`FancyDiv`的`className`放置在扩展`props`（`{...props}`）之后，使其始终“获胜”。
 
 ```js
 // my `className` clobbers your `className`
@@ -117,7 +118,7 @@ const FancyDiv = props =>
   <div {...props} className="fancy" />
 ```
 
-You should handle these types of props gracefully. In this case, I'll merge the author's `props.className` with the `className` needed to style my component.
+你应该优雅地处理这些类型的`props`。在这种情况下，我将合并作者的`props.className`和样式组件所需的`className`。
 
 ```js
 const FancyDiv = ({ className, ...props }) =>
@@ -128,37 +129,37 @@ const FancyDiv = ({ className, ...props }) =>
 ```
 
 
-## destructuring arguments
+## 解构参数
 
-[Destructuring assignment](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment) is an ES2015 feature. It pairs nicely with `props` in Stateless Functions.
+[解构赋值](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment)是一个ES2015特性。它与无状态函数中的`props`配对得很好。
 
-These examples are equivalent.
+这些例子是等价的。
 ```js
 const Greeting = props => <div>Hi {props.name}!</div>
 
 const Greeting = ({ name }) => <div>Hi {name}!</div>
 ```
 
-The [rest parameter syntax](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/rest_parameters) (`...`) allows you to collect all the remaining properties in a new object.
+[剩余参数语法](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/rest_parameters) (`...`)允许你收集新对象中的所有其余属性。
 
 ```js
 const Greeting = ({ name, ...props }) =>
   <div>Hi {name}!</div>
 ```
 
-In turn, this object can use [JSX Spread Attributes](#jsx-spread-attributes) to forward `props` to the composed component.
+反过来，该对象可以使用[JSX扩展属性](#jsx-spread-attributes)将`props`转发给组合组件。
 
 ```js
 const Greeting = ({ name, ...props }) =>
   <div {...props}>Hi {name}!</div>
 ```
 
-Avoid forwarding non-DOM `props` to composed components. Destructuring makes this very easy because you can create a new `props` object **without** component-specific `props`.
+避免将非DOM `props`转发给组合组件。解构使得这很容易，因为你可以创建一个新的`props`对象，而不需要特定的组件`props`。
 
 
-## conditional rendering
+## 条件渲染
 
-You can't use regular if/else conditions inside a component definition. [The conditional (ternary) operator](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Conditional_Operator) is your friend.
+你不能在组件定义中使用常规的if/else条件。[条件（三元）运算符](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Conditional_Operator)是你的朋友。
 
 `if`
 
@@ -172,7 +173,7 @@ You can't use regular if/else conditions inside a component definition. [The con
 {condition || <span>Rendered when `falsey`</span> }
 ```
 
-`if-else` (tidy one-liners)
+`if-else` (整洁的一行)
 
 ```js
 {condition
@@ -181,7 +182,7 @@ You can't use regular if/else conditions inside a component definition. [The con
 }
 ```
 
-`if-else` (big blocks)
+`if-else` (大块儿)
 
 ```js
 {condition ? (
@@ -196,9 +197,9 @@ You can't use regular if/else conditions inside a component definition. [The con
 ```
 
 
-## Children types
+## 子元素类型
 
-React can render `children` of many types. In most cases it's either an `array` or a `string`.
+React可以渲染多种类型的子元素。在大多数情况下，它是一个'array'或一个'string'。
 
 `string`
 
@@ -216,7 +217,7 @@ React can render `children` of many types. In most cases it's either an `array` 
 </div>
 ```
 
-Functions may be used as children. However, it requires [coordination with the parent component](#render-callback) to be useful.
+函数可能被用作子元素。但是，它需要[与父组件协调](#render-callback)才有用。
 
 `function`
 
@@ -227,11 +228,11 @@ Functions may be used as children. However, it requires [coordination with the p
 ```
 
 
-## Array as children
+## 数组做为子元素
 
-Providing an array as `children` is a very common. It's how lists are drawn in React.
+提供一个数组作为子元素是非常普遍的。在React中列表就是这么绘制的。
 
-We use `map()` to create an array of React Elements for every value in the array.
+我们使用`map()`创建一个数组，该数组中的每个值对应一个React Elements。
 
 ```js
 <ul>
@@ -241,7 +242,7 @@ We use `map()` to create an array of React Elements for every value in the array
 </ul>
 ```
 
-That's equivalent to providing a literal `array`.
+这相当于提供一个直译的数组。
 
 ```js
 <ul>
@@ -252,7 +253,7 @@ That's equivalent to providing a literal `array`.
 </ul>
 ```
 
-This pattern can be combined with destructuring, JSX Spread Attributes, and other components, for some serious terseness.
+这个模式可以与解构，JSX扩展属性和其他组件结合使用，以获得一些严谨的简洁。
 
 ```js
 <ul>
@@ -263,31 +264,31 @@ This pattern can be combined with destructuring, JSX Spread Attributes, and othe
 ```
 
 
-## Function as children
+## 函数作为子元素
 
-Using a function as `children` isn't inherently useful.
+用函数作为子元素不是天生就有用的。
 
 ```js
-<div>{() => { return "hello world!"}()}</div>
+<div>{(() => { return "hello world!"})()}</div>
 ```
 
-However, it can be used in component authoring for some serious power. This technique is commonly referred to as `render callbacks`.
+但是，它能被用在一些严肃有力的组件创造上。这种技术通常被称为`渲染回调`。
 
-This is a powerful technique used by libraries like [ReactMotion](https://github.com/chenglou/react-motion). When applied, rendering logic can be kept in the owner component, instead of being delegated.
+这种强大的技巧被很多库使用像[ReactMotion](https://github.com/chenglou/react-motion)。在应用时，渲染逻辑可以保存在所有者组件中，而不是被委派。
 
-See [Render callbacks](#render-callback), for more details.
+更多详细信息，请参阅[渲染回调](#render-callback)。
 
-## Render callback
+## 渲染回调
 
-Here's a component that uses a Render callback. It's not useful, but it's an easy illustration to start with.
+这是一个使用渲染回调的组件。它没有用，但是一个用来开始的简单例子。
 
 ```js
 const Width = ({ children }) => children(500)
 ```
 
-The component calls `children` as a function, with some number of arguments. Here, it's the number `500`.
+该组件把子组件当做函数调用，传入一些数字参数。在这里是数字500。
 
-To use this component, we give it a [function as `children`](#function-as-children).
+为了使用这个组件，我们给它一个[函数作为子元素](#function-as-children)。
 
 ```js
 <Width>
@@ -295,13 +296,13 @@ To use this component, we give it a [function as `children`](#function-as-childr
 </Width>
 ```
 
-We get this output.
+我们得到这个输出。
 
 ```js
 <div>window is 500</div>
 ```
 
-With this setup, we can use this `width` to make rendering decisions.
+通过这个设置，我们可以使用这个宽度来作出渲染决定。
 
 ```js
 <Width>
@@ -313,7 +314,7 @@ With this setup, we can use this `width` to make rendering decisions.
 </Width>
 ```
 
-If we plan to use this condition a lot, we can define another components to encapsulate the reused logic.
+如果我们打算使用这个条件，我们可以定义另一个组件来封装重用的逻辑。
 
 ```js
 const MinWidth = ({ width: minWidth, children }) =>
@@ -326,8 +327,7 @@ const MinWidth = ({ width: minWidth, children }) =>
   </Width>
 ```
 
-
-Obviously a static `Width` component isn't useful but one that watches the browser window is. Here's a sample implementation.
+很显然，一个静态的`width`组件并不是很有用，但是它可以监视浏览器窗口。这是一个示例实现。
 
 ```js
 class WindowWidth extends React.Component {
@@ -353,12 +353,12 @@ class WindowWidth extends React.Component {
 }
 ```
 
-Many developers favor [Higher Order Components](#higher-order-component) for this type of functionality. It's a matter of preference.
+许多开发人员喜欢这种类型的函数性的高阶组件。这是一个偏好的问题。
 
 
-## Children pass-through
+## 子元素传递
 
-You might create a component designed to apply `context` and render its `children`.
+你可以创建一个旨在应用上下文（context）并呈现其子级的组件。
 
 ```js
 class SomeContextProvider extends React.Component {
@@ -372,40 +372,41 @@ class SomeContextProvider extends React.Component {
 }
 ```
 
-You're faced with a decision. Wrap `children` in an extraneous `<div />` or return `children` directly. The first options gives you extra markup (which can break some stylesheets). The second will result in unhelpful errors.
+你面临着一个决定。将子元素包裹在无关`<div />`中或直接返回子元素。第一个选项会增加额外的标记（这可能破坏一些样式表）。第二个将导致无益的错误（译注：我用15.4+版本测试的这里不会报错，不知道是作者表述有误还是我理解有误，[demo](https://codepen.io/yueshuiniao/pen/BmmdzY)）。
 
 ```js
-// option 1: extra div
+// option 1: 额外的div
 return <div>{children}</div>
 
-// option 2: unhelpful errors
+// option 2: 无益的错误
 return children
 ```
 
-It's best to treat `children` as an opaque data type. React provides `React.Children` for dealing with `children` appropriately.
+最好把子元素当成一种不透明的数据类型。React提供React.Children来适当地处理子元素。
 
 ```js
 return React.Children.only(this.props.children)
 ```
 
-## Proxy component
 
-*(I'm not sure if this name makes sense)*
+## 代理组件
 
-Buttons are everywhere in web apps. And every one of them must have the `type` attribute set to "button".
+*(我不确定这个名字是否有意义)*
+
+网络应用程序中的按钮无处不在。而且它们每个都必须将类型属性设置为"button"。
 
 ```js
 <button type="button">
 ```
 
-Writing this attribute hundreds of times is error prone. We can write a higher level component to proxy `props` to a lower-level `button` component.
+写这个属性几百次是容易出错的。我们可以编写更高级别的组件来代理props到更低级别的按钮组件。
 
 ```js
 const Button = props =>
   <button type="button" {...props}>
 ```
 
-We can use `Button` in place of `button` and ensure that the `type` attribute is consistently applied everywhere.
+我们可以使用`Button`来代替`button`，并确保类型属性始终适用于任何地方。
 
 ```js
 <Button />
@@ -415,17 +416,18 @@ We can use `Button` in place of `button` and ensure that the `type` attribute is
 // <button type="button" class="CTA">Send Money</button>
 ```
 
-## Style component
 
-This is a [Proxy component](#proxy-component) applied to the practices of style.
+## 样式组件
 
-Say we have a button. It uses classes to be styled as a "primary" button.
+这是一个应用于样式实践的[代理组件](#proxy-component).
+
+假设我们有一个按钮。它使用class "primary"作为按钮样式。
 
 ```js
 <button type="button" className="btn btn-primary">
 ```
 
-We can generate this output using a couple single-purpose components.
+我们可以使用几个单一用途的组件来生成这个输出。
 
 ```js
 import classnames from 'classnames'
@@ -445,7 +447,7 @@ const Btn = ({ className, primary, ...props }) =>
   />
 ```
 
-It can help to visualize this.
+更形象化的展示。
 
 ```js
 PrimaryBtn()
@@ -454,25 +456,26 @@ PrimaryBtn()
       ↳ '<button type="button" class="btn btn-primary"></button>'
 ```
 
-Using these components, all of these result in the same output.
+使用这些组件，所有这些都会产生相同的输出。
+
 ```js
 <PrimaryBtn />
 <Btn primary />
 <button type="button" className="btn btn-primary" />
 ```
 
-This can be a huge boon to style maintenance. It isolates all concerns of style to a single component.
-
-## Event switch
+这对样式的维护很有好处。它将样式的所有关注点分离到单个组件。
 
 
-When writing event handlers it's common to adopt the `handle{eventName}` naming convention.
+## 事件转换
+
+在编写事件处理程序时，通常采用 `handle{eventName}` 命名约定。
 
 ```js
 handleClick(e) { /* do something */ }
 ```
 
-For components that handle several event types, these function names can be repetitive. The names themselves might not provide much value, as they simply proxy to other actions/functions.
+对于处理多个事件类型的组件，这些函数名称可能会重复。名称本身可能不会提供太多的意义，因为它们只是代理其他的actions/functions。
 
 ```js
 handleClick() { require("./actions/doStuff")(/* action stuff */) }
@@ -480,7 +483,7 @@ handleMouseEnter() { this.setState({ hovered: true }) }
 handleMouseLeave() { this.setState({ hovered: false }) }
 ```
 
-Consider writing a single event handler for your component and switching on `event.type`.
+考虑为你的组件编写一个单独的事件处理程序，并开启 `event.type`。
 
 ```js
 handleEvent({type}) {
@@ -497,21 +500,20 @@ handleEvent({type}) {
 }
 ```
 
-Alternatively, for simple components, you can call imported actions/functions directly from components, using arrow functions.
+另外，对于简单的组件，可以使用箭头函数直接从组件中调用导入的actions/functions。
 
 ```js
 <div onClick={() => someImportedAction({ action: "DO_STUFF" })}
 ```
 
-Don't fret about performance optimizations until you have problems. Seriously don't.
+在遇到问题之前，不要担心性能优化问题。真的不要。
 
 
-## Layout component
+## 布局组件
 
+布局组件会导致某种形式的静态DOM元素。如果有的话，它可能不需要经常更新。
 
-Layout components result in some form of static DOM element. It might not need to update frequently, if ever.
-
-Consider a component that renders two `children` side-by-side.
+考虑一个能够渲染两个并排子元素的组件。
 
 ```js
 <HorizontalSplit
@@ -520,9 +522,9 @@ Consider a component that renders two `children` side-by-side.
 />
 ```
 
-We can aggressively optimize this component.
+我们可以积极地优化这个组件。
 
-While `HorizontalSplit` will be `parent` to both components, it will never be their `owner`. We can tell it to update never, without interrupting the lifecycle of the components inside.
+虽然 `HorizontalSplit` 将成为这两个组件的父组件，但它永远不会是他们的所有者。我们可以告诉它永远不更新，而不会中断组件的生命周期。
 
 ```js
 class HorizontalSplit extends React.Component {
@@ -540,11 +542,11 @@ class HorizontalSplit extends React.Component {
 ```
 
 
-## Container component
+## 容器组件
 
-"A container does data fetching and then renders its corresponding sub-component. That’s it."&mdash;[Jason Bonta](https://twitter.com/jasonbonta)
+“一个容器获取数据，然后渲染其相应的子组件，就是这样。”&mdash;[Jason Bonta](https://twitter.com/jasonbonta)
 
-Given this reusable `CommentList` component.
+给定这个可复用的CommentList组件。
 
 ```js
 const CommentList = ({ comments }) =>
@@ -555,7 +557,7 @@ const CommentList = ({ comments }) =>
   </ul>
 ```
 
-We can create a new component responsible for fetching data and rendering the stateless `CommentList` component.
+我们可以创建一个新的组件，负责获取数据并渲染无状态的CommentList组件。
 
 ```js
 class CommentListContainer extends React.Component {
@@ -579,16 +581,16 @@ class CommentListContainer extends React.Component {
 }
 ```
 
-We can write different containers for different application contexts.
+我们可以为不同的应用上下文编写不同的容器。
 
 
-## Higher-order component
+## 高阶组件
 
-A [higher-order function](https://en.wikipedia.org/wiki/Higher-order_function) is a function that takes and/or returns a function. It's not more complicated than that. So, what's a higher-order component?
+[高阶函数](https://en.wikipedia.org/wiki/Higher-order_function)是一个函数，它接受和/或返回一个函数。这并不比这更复杂。那么，什么是高阶组件？
 
-If you're already using [container components](#container-component), these are just generic containers, wrapped up in a function.
+如果你已经在使用[容器组件](#container-component), 这些只是封装在函数中的通用容器。
 
-Let's start with our stateless `Greeting` component.
+让我们从我们的无状态 `Greeting` 组件开始吧。
 
 ```js
 const Greeting = ({ name }) => {
@@ -598,7 +600,7 @@ const Greeting = ({ name }) => {
 }
 ```
 
-If it gets `props.name`, it's gonna render that data. Otherwise it'll say that it's "Connecting...". Now for the the higher-order bit.
+如果它得到的 `props.name`，它会渲染该数据。否则，会显示"Connecting..."。然后是高阶部分。
 
 ```js
 const Connect = ComposedComponent =>
@@ -624,24 +626,23 @@ const Connect = ComposedComponent =>
   }
 ```
 
-This is just a function that returns component that renders the component we passed as an argument.
+这只是一个返回组件的函数，该函数将渲染作为参数传递的组件。
 
-Last step, we need to wrap our our `Greeting` component in `Connect`.
+最后一步，我们需要将我们的 `Greeting` 组件包装在 `Connect` 中。
 
 ```js
 const ConnectedMyComponent = Connect(Greeting)
 ```
 
-This is a powerful pattern for providing fetching and providing data to any number of [stateless function components](#stateless-function).
+这是为任何数量的[无状态函数组件](#stateless-function)提供获取和绑定数据的强大模式。
 
-## State hoisting
-[Stateless functions](#stateless-function) don't hold state (as the name implies).
+## 状态提升
+[无状态函数](#stateless-function)不保存状态（顾名思义）。
 
-Events are changes in state.
-Their data needs to be passed to stateful [container components](#container-component) parents.
+事件是状态的变化。
+数据要传给有状态的父[容器组件](#container-component)。
 
-This is called "state hoisting".
-It's accomplished by passing a callback from a container component to a child component.
+这就是所谓的"状态提升"。它是通过从容器组件传递一个回调到一个子组件来完成的。
 
 ```js
 class NameContainer extends React.Component {
@@ -654,10 +655,8 @@ const Name = ({ onChange }) =>
   <input onChange={e => onChange(e.target.value)} />
 ```
 
-`Name` receives an `onChange` callback from `NameContainer` and calls on events.
-
-The `alert` above makes for a terse demo but it's not changing state.
-Let's change the internal state of `NameContainer`.
+`Name`接收来自`NameContainer`的`onChange`回调并调用事件。
+上面的`alert`是一个简洁的演示，但它不会改变状态。我们来改变NameContainer的内部状态。
 
 ```js
 class NameContainer extends React.Component {
@@ -672,38 +671,31 @@ class NameContainer extends React.Component {
 }
 ```
 
-The state is _hoisted_ to the container, by the provided callback, where it's used to update local state.
-This sets a nice clear boundary and maximizes the re-usability of stateless function.
+通过提供的回调，状态被提升到容器，用于更新本地状态。这设置了一个很好的清晰边界，并最大化了无状态函数的可复用性。
 
-This pattern isn't limited to stateless functions.
-Because stateless function don't have lifecycle events,
-you'll use this pattern with component classes as well.
+这种模式不限于无状态函数。因为无状态函数没有生命周期事件，所以你也可以在类组件中使用这个模式。
 
-*[Controlled input](#controlled-input) is an important pattern to know for use with state hoisting*
+*[受控的input](#controlled-input)是了解状态提升使用的重要模式。
 
-*(It's best to process the event object on the stateful component)*
+*(最好在有状态组件上处理事件对象)*
 
 
-## Controlled input
-It's hard to talk about controlled inputs in the abstract.
-Let's start with an uncontrolled (normal) input and go from there.
+## 受控的input
+摘要中很难谈到受控的input。让我们从一个不受控制的（正常）输入开始，然后从那里开始。
 
 ```js
 <input type="text" />
 ```
 
-When you fiddle with this input in the browser, you see your changes.
-This is normal.
+当你在浏览器中捣鼓这个输入时，你会看到你的改变。这个是正常的。
 
-A controlled input disallows the DOM mutations that make this possible.
-You set the `value` of the input in component-land and it doesn't change in DOM-land.
+受控输入不允许使这成为可能的DOM突变。你可以在组件区域中设置输入的值，并且在DOM区域中不会更改
 
 ```js
 <input type="text" value="This won't change. Try it." />
 ```
 
-Obviously static inputs aren't very useful to your users.
-So, we derive a `value` from state.
+显然，静态输入对用户来说不是很有用。所以，我们从`state`获得`value`。
 
 ```js
 class ControlledNameInput extends React.Component {
@@ -718,7 +710,7 @@ class ControlledNameInput extends React.Component {
 }
 ```
 
-Then, changing the input is a matter of changing component state.
+然后，改变输入是一个改变组件状态的问题。
 
 ```js
     return (
@@ -729,9 +721,6 @@ Then, changing the input is a matter of changing component state.
     )
 ```
 
-This is a controlled input.
-It only updates the DOM when state has changed in our component.
-This is invaluable when creating consistent UIs.
+这是一个受控的输入。它只在组件状态发生变化时更新DOM。创建一致的用户界面时，这是非常宝贵的。
 
-*If you're using [stateless functions](#stateless-function) for form elements,
-read about using [state hoisting](#state-hoisting) to move new state up the component tree.*
+*如果你正在使用[无状态函数](#stateless-function)作表单元素，请阅读使用[状态提升](#state-hoisting)将新状态移动到组件树上。*
