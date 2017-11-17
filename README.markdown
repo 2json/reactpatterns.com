@@ -1,7 +1,7 @@
 ## Contents
 
 * [无状态函数](#无状态函数)
-* [JSX扩展属性](#JSX扩展属性)
+* [JSX扩展属性](#jsx扩展属性)
 * [解构参数](#解构参数)
 * [条件渲染](#条件渲染)
 * [子元素类型](#子元素类型)
@@ -147,7 +147,7 @@ const Greeting = ({ name, ...props }) =>
   <div>Hi {name}!</div>
 ```
 
-反过来，该对象可以使用[JSX扩展属性](#JSX扩展属性)将`props`转发给组合组件。
+反过来，该对象可以使用[JSX扩展属性](#jsx扩展属性)将`props`转发给组合组件。
 
 ```js
 const Greeting = ({ name, ...props }) =>
